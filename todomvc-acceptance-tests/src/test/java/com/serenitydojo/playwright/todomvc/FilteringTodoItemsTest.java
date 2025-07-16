@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Filtering todo items")
 @UsePlaywright(ChromeHeadlessOptions.class)
 @Feature("Filtering todo items")
-class FilteringTodoItemsTest extends OpenApplication {
+class FilteringTodoItemsTest {
 
     TodoMvcAppPage todoMvcApp;
 

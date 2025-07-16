@@ -124,7 +124,7 @@
                             <name>npm-install</name>
                             <workingDir>${project.basedir}/../react-todomvc</workingDir>
                             <arguments>
-                                <argument>C:\Program Files\nodejs\npm.cmd</argument>
+                                <argument>npm.cmd</argument>
                                 <argument>install</argument>
                             </arguments>
                         </configuration>
@@ -141,7 +141,7 @@
                             <waitForInterrupt>false</waitForInterrupt>
                             <healthcheckUrl>http://localhost:7002</healthcheckUrl>
                             <arguments>
-                                <argument>C:\Program Files\nodejs\npm.cmd</argument>
+                                <argument>npm.cmd</argument>
                                 <argument>run</argument>
                                 <argument>serve</argument>
                             </arguments>

@@ -14,7 +14,7 @@ import org.assertj.core.api.Assertions;
 @DisplayName("Completing todo items to the list")
 @UsePlaywright(ChromeHeadlessOptions.class)
 @Feature("Completing todo items to the list")
-class CompletingTodoItemsTest extends OpenApplication {
+class CompletingTodoItemsTest {
 
     TodoMvcAppPage todoMvcApp;
 

@@ -16,7 +16,7 @@ public class OpenApplication {
 
     @BeforeAll
     static void startFrontendApp() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("C:\\Program Files\\nodejs\\npm.cmd", "run", "serve");
+        ProcessBuilder pb = new ProcessBuilder("npm.cmd", "run", "serve");
         pb.directory(new File("../react-todomvc"));
         pb.inheritIO();
         frontendProcess = pb.start();

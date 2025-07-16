@@ -17,7 +17,7 @@ import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertTha
 @DisplayName("Adding and deleting todo items to the list")
 @Feature("Adding and deleting todo items to the list")
 @UsePlaywright(ChromeHeadlessOptions.class)
-class AddingAndDeletingTodoItemsTest extends OpenApplication {
+class AddingAndDeletingTodoItemsTest {
 
 
     TodoMvcAppPage todoMvcApp;
