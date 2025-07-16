@@ -6,17 +6,23 @@ import com.serenitydojo.playwright.fixtures.ChromeHeadlessOptions;
 import com.serenitydojo.playwright.todomvc.pageobjects.TodoMvcAppPage;
 import io.qameta.allure.Feature;
 import io.qameta.allure.Story;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+
+import static com.microsoft.playwright.assertions.PlaywrightAssertions.assertThat;
 
 @DisplayName("Adding and deleting todo items to the list")
 @Feature("Adding and deleting todo items to the list")
 @UsePlaywright(ChromeHeadlessOptions.class)
-class AddingAndDeletingTodoItemsTest {
+class AddingAndDeletingTodoItemsTest extends OpenApplication {
+
 
     TodoMvcAppPage todoMvcApp;
+
+
 
     @BeforeEach
     void openApp(Page page) {
@@ -30,17 +36,15 @@ class AddingAndDeletingTodoItemsTest {
     class WhenTheApplicationStarts {
         @DisplayName("The list should be empty")
         @Test
-        void the_list_should_initially_be_empty() {
-            // TODO: Implement me
-            // 1) Verify that no items are displayed in the todo list
+        void the_list_should_initially_be_empty(Page page) {
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).isEmpty();
         }
 
         @DisplayName("The user should be prompted to enter a todo item")
         @Test
         void the_user_should_be_prompted_to_enter_a_value() {
-            // TODO: Implement me
-            // 1) Verify that the input field is visible
-            // 2) Verify that the placeholder text is "What needs to be done?"
+            assertThat(todoMvcApp.todoField()).isVisible();
+            assertThat(todoMvcApp.todoField()).hasAttribute("placeholder", "What needs to be done?");
         }
     }
 
@@ -52,42 +56,46 @@ class AddingAndDeletingTodoItemsTest {
         @DisplayName("We can add a single item")
         @Test
         void addingASingleItem() {
-            // TODO: Implement me
-            // 1) Add a single todo item "Feed the cat"
-            // 2) Verify that the list contains exactly "Feed the cat"
+            todoMvcApp.addItem("Feed the cat");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat");
         }
 
         @DisplayName("We can add multiple items")
         @Test
         void addingSeveralItem() {
-            // TODO: Implement me
-            // 1) Add multiple items "Feed the cat" and "Walk the dog"
-            // 2) Verify that the list contains exactly "Feed the cat" and "Walk the dog"
+            todoMvcApp.addItem("Feed the cat");
+            todoMvcApp.addItem("Walk the dog");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat", "Walk the dog");
         }
 
         @DisplayName("We can't add an empty item")
         @Test
         void addingAnEmptyItem() {
-            // TODO: Implement me
-            // 1) Add a valid item "Feed the cat"
-            // 2) Attempt to add an empty item
-            // 3) Verify that the list contains only "Feed the cat"
+            todoMvcApp.addItem("Feed the cat");
+            todoMvcApp.addItem("");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat");
         }
 
         @DisplayName("We can add duplicate items")
         @Test
         void addingDuplicateItem() {
-            // TODO: Implement me
-            // 1) Add items "Feed the cat", "Walk the dog", and "Feed the cat" again
-            // 2) Verify that the list contains duplicates in the order they were added
+            todoMvcApp.addItems("Feed the cat", "Walk the dog" ,"Feed the cat");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat",
+                    "Walk the dog", "Feed the cat");
         }
 
         @DisplayName("We can add items with non-English characters")
-        @Test
-        void addingNonEnglishItems() {
-            // TODO: Implement me
-            // 1) Add items in various languages (e.g., "Feed the cat", "喂猫", "إطعام القط")
-            // 2) Verify that each item appears in the list as added
+        @ParameterizedTest
+        @CsvSource({
+                "Feed the cat",
+                "喂猫",
+                "إطعام القط",
+                "Покормить кошку",
+                "고양이에게 먹이를 주다"
+        })
+        void addingNonEnglishItems(String item) {
+            todoMvcApp.addItem(item);
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly(item);
         }
     }
 
@@ -96,31 +104,32 @@ class AddingAndDeletingTodoItemsTest {
     @Nested
     class WhenDeletingItems {
 
+        @BeforeEach
+        void addItems() {
+            todoMvcApp.addItems("Feed the cat", "Walk the dog", "Buy some milk");
+        }
+
+
+
         @DisplayName("We can delete an item in the middle of the list")
         @Test
         void deletingAnItemInTheMiddleOfTheList() {
-            // TODO: Implement me
-            // 1) Add items "Feed the cat", "Walk the dog", "Buy some milk"
-            // 2) Delete "Walk the dog"
-            // 3) Verify that the list contains "Feed the cat" and "Buy some milk"
+            todoMvcApp.deleteItem("Walk the dog");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat", "Buy some milk");
         }
 
         @DisplayName("We can delete an item at the end of the list")
         @Test
         void deletingAnItemAtTheEndOfTheList() {
-            // TODO: Implement me
-            // 1) Add items "Feed the cat", "Walk the dog", "Buy some milk"
-            // 2) Delete "Buy some milk"
-            // 3) Verify that the list contains "Feed the cat" and "Walk the dog"
+            todoMvcApp.deleteItem("Buy some milk");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat", "Walk the dog");
         }
 
         @DisplayName("We can delete an item at the start of the list")
         @Test
         void deletingAnItemAtTheStartOfTheList() {
-            // TODO: Implement me
-            // 1) Add items "Feed the cat", "Walk the dog", "Buy some milk"
-            // 2) Delete "Feed the cat"
-            // 3) Verify that the list contains "Walk the dog" and "Buy some milk"
+            todoMvcApp.deleteItem("Feed the cat");
+            Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Walk the dog", "Buy some milk");
         }
     }
 }

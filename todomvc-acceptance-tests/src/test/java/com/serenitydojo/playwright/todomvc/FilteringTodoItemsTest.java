@@ -5,6 +5,7 @@ import com.microsoft.playwright.junit.UsePlaywright;
 import com.serenitydojo.playwright.fixtures.ChromeHeadlessOptions;
 import com.serenitydojo.playwright.todomvc.pageobjects.TodoMvcAppPage;
 import io.qameta.allure.Feature;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Filtering todo items")
 @UsePlaywright(ChromeHeadlessOptions.class)
 @Feature("Filtering todo items")
-class FilteringTodoItemsTest {
+class FilteringTodoItemsTest extends OpenApplication {
 
     TodoMvcAppPage todoMvcApp;
 
@@ -25,39 +26,35 @@ class FilteringTodoItemsTest {
     @DisplayName("All items should be displayed by default")
     @Test
     void allItemsShouldBeDisplayedByDefault() {
-        // TODO: Implement me
-        // 1) Add "Feed the cat", "Walk the dog", "Buy some milk"
-        // 2) Verify that the active filter is set to "All"
+        todoMvcApp.addItems("Feed the cat", "Walk the dog", "Buy some milk");
+        Assertions.assertThat(todoMvcApp.currentFilter()).isEqualTo("All");
     }
 
     @DisplayName("Should be able to filter active items")
     @Test
     void shouldBeAbleToFilterByActiveItems() {
-        // TODO: Implement me
-        // 1) Add "Feed the cat", "Walk the dog", "Buy some milk"
-        // 2) Complete "Walk the dog"
-        // 3) Apply the "Active" filter
-        // 4) Verify that only "Feed the cat" and "Buy some milk" are displayed
+        todoMvcApp.addItems("Feed the cat", "Walk the dog", "Buy some milk");
+        todoMvcApp.completeItem("Walk the dog");
+        todoMvcApp.applyFilter("Active");
+        Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat","Buy some milk");
     }
 
     @DisplayName("Should be able to filter completed items")
     @Test
     void shouldBeAbleToFilterByCompletedItems() {
-        // TODO: Implement me
-        // 1) Add "Feed the cat", "Walk the dog", "Buy some milk"
-        // 2) Complete "Walk the dog"
-        // 3) Apply the "Completed" filter
-        // 4) Verify that only "Walk the dog" is displayed
+        todoMvcApp.addItems("Feed the cat", "Walk the dog", "Buy some milk");
+        todoMvcApp.completeItem("Walk the dog");
+        todoMvcApp.applyFilter("Completed");
+        Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Walk the dog");
     }
 
     @DisplayName("Should be able to revert to showing all items")
     @Test
     void shouldBeAbleToRevertToShowingAllItems() {
-        // TODO: Implement me
-        // 1) Add "Feed the cat", "Walk the dog", "Buy some milk"
-        // 2) Complete "Walk the dog"
-        // 3) Apply the "Completed" filter
-        // 4) Apply the "All" filter
-        // 5) Verify that all three items ("Feed the cat", "Walk the dog", "Buy some milk") are displayed
+        todoMvcApp.addItems("Feed the cat", "Walk the dog", "Buy some milk");
+        todoMvcApp.completeItem("Walk the dog");
+        todoMvcApp.applyFilter("Completed");
+        todoMvcApp.applyFilter("All");
+        Assertions.assertThat(todoMvcApp.todoItemsDispalyed()).containsExactly("Feed the cat", "Walk the dog", "Buy some milk");
     }
 }
